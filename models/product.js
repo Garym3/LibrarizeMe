@@ -9,11 +9,11 @@ module.exports = function(sequelize, DataTypes) {
       autoIncrement: true
     },
     libelle: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(100),
       allowNull: false
     },
     type: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(100),
       allowNull: false
     },
     description: {

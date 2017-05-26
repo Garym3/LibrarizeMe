@@ -5,7 +5,7 @@ const models = require("../models");
 const router = express.Router();
 const User = models.User;
 
-//Ajoute un utilisateur 
+//Crée un utilisateur 
 router.get("/add/:token/:email/:password/:pseudo/:lastname/:firstname/:phone/:isSubscribed", function(req, res, next){
     let token = req.params.token;
     let email = req.params.email;
@@ -32,7 +32,7 @@ router.get("/add/:token/:email/:password/:pseudo/:lastname/:firstname/:phone/:is
     });
 });
 
-//Affiche la liste des utilisateurs
+//Récupère la liste des utilisateurs
 router.get("/", function(req,res){
     models.users.findAll().then(function(result){
         res.json(result);
@@ -41,7 +41,7 @@ router.get("/", function(req,res){
     });
 });
 
-//Affiche l'utilisateur selon son identifiant
+//Récupère l'utilisateur selon son identifiant
 router.get("/get/:user_id", function(req,res){
     models.users.find({
         where: {

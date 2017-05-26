@@ -9,7 +9,7 @@ var app = express();
 
 models.sequelize.sync({
   //true = overwrite ; false = doesn't overwrite but nothing happen ; else, error if tables already exist
-  force: true
+  //force: true
 });
 
 //MiddleWares
