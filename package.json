@@ -1,21 +1,21 @@
 {
-  "name": "dropthatfile-api",
+  "name": "librarizeme-api",
   "version": "1.0.0",
-  "description": "Service de liason de données DropThatFile",
+  "description": "API LibrarizeMe",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Maill/DropThatFile-API.git"
+    "url": "git+https://github.com/olivierLefebvre96/LibrarizeMe.git"
   },
   "author": "Cornu Nicolas - Lefebvre Olivier",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Maill/DropThatFile-API/issues"
+    "url": "https://github.com/olivierLefebvre96/LibrarizeMe/issues"
   },
-  "homepage": "https://github.com/Maill/DropThatFile-API#readme",
+  "homepage": "https://github.com/olivierLefebvre96/LibrarizeMe#readme",
   "dependencies": {
     "body-parser": "^1.17.1",
     "express": "^4.15.2",

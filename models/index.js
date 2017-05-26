@@ -10,10 +10,8 @@ var db        = {};
 
 if (config.use_env_variable) {
   var sequelize = new Sequelize(process.env[config.use_env_variable], {logging: false});
-  //sequelize.sync({ force: true });
 } else {
   var sequelize = new Sequelize(config.database, config.username, config.password, {logging: false}, config);
-  //sequelize.sync({ force: true });
 }
 
 fs

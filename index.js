@@ -4,7 +4,13 @@ var bodyParser = require('body-parser');
 var http = require("http");
 var fs = require('fs');
 var NodeRSA = require('node-rsa');
-var app = express()
+var models = require('./models');
+var app = express();
+
+models.sequelize.sync({
+  //true = overwrite ; false = doesn't overwrite but nothing happen ; else, error if tables already exist
+  force: true
+});
 
 //MiddleWares
 app.set('json spaces', 3);
@@ -31,5 +37,5 @@ app.get('/', function (req, res) {
 
 //
 app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
+  console.log('SERVER STARTED ON PORT 3000!');
 })

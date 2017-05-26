@@ -17,7 +17,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     description: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT,
       allowNull: true
     },
     ean13Code: {
@@ -25,7 +25,5 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true,
       unique: true
     }
-  }, {
-    tableName: 'product'
   });
 };
