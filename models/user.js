@@ -23,7 +23,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     pseudo: {
       type: DataTypes.STRING(50),
-      allowNull: true,
+      allowNull: false,
       unique: true
     },
     lastname: {

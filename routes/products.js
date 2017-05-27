@@ -34,7 +34,7 @@ router.get("/", function(req,res,next){
 
 //Récupère tous les produits selon le champ et la valeur saisis
 router.get("/get/:attribute/:value", function(req, res){
-    let attr = req.params.attribute;
+    var attr = req.params.attribute;
     switch(attr) {
         case "id":
             models.product.find({
@@ -47,7 +47,7 @@ router.get("/get/:attribute/:value", function(req, res){
             break;
         case "libelle":
             models.product.findAll({
-                where: { type: req.params.value },
+                where: { libelle: req.params.value },
                 //where: { libelle: { $like: "%" + req.params.value + "%" } },
             }).then(function(result){
                 res.json(result);
@@ -66,7 +66,7 @@ router.get("/get/:attribute/:value", function(req, res){
             break;
         case "ean13Code":
             models.product.findAll({
-                where: { type: req.params.value },
+                where: { ean13Code: req.params.value },
             }).then(function(result){
                 res.json(result);
             }).catch(function(err){
