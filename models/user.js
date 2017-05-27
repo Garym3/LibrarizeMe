@@ -3,14 +3,10 @@
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('user', {
     id: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.INTEGER(11),
       allowNull: false,
       primaryKey: true,
       autoIncrement: true
-    },
-    token: {
-      type: DataTypes.STRING(255),
-      allowNull: false
     },
     email: {
       type: DataTypes.STRING(100),
@@ -18,20 +14,20 @@ module.exports = function(sequelize, DataTypes) {
       unique: true
     },
     password: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(100),
       allowNull: false
     },
     pseudo: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.STRING(45),
       allowNull: false,
       unique: true
     },
     lastname: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(50),
       allowNull: true
     },
     firstname: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(50),
       allowNull: true
     },
     phone: {
@@ -39,12 +35,11 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     isSubscribed: {
-      type: DataTypes.BOOLEAN,
+      type: DataTypes.INTEGER(1),
       allowNull: true
     }
   }, {
-    freezeTableName: true,
-    timestamps: true,
-    underscored: true
-  }
-)};
+    tableName: 'user',
+    timestamps: true
+  });
+};

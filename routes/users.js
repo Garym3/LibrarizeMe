@@ -3,7 +3,10 @@
 const express = require("express");
 const models = require("../models");
 const router = express.Router();
-const User = models.User;
+const User = models.user;
+const Product = models.product;
+
+/* USER REGION */
 
 //Crée un utilisateur 
 router.get("/add/:token/:email/:password/:pseudo/:lastname/:firstname/:phone/:isSubscribed", function(req, res, next){
@@ -16,7 +19,7 @@ router.get("/add/:token/:email/:password/:pseudo/:lastname/:firstname/:phone/:is
     let phone = req.params.phone;
     let isSubscribed = req.params.isSubscribed;
 
-    models.user.create({
+    User.create({
         token: token,
         email: email,
         password: password,
@@ -34,7 +37,7 @@ router.get("/add/:token/:email/:password/:pseudo/:lastname/:firstname/:phone/:is
 
 //Récupère la liste des utilisateurs
 router.get("/", function(req,res){
-    models.user.findAll().then(function(result){
+    Product.findAll().then(function(result){
         res.json(result);
     }).catch(function(err){
         if(err) throw err;
@@ -43,7 +46,7 @@ router.get("/", function(req,res){
 
 //Récupère l'utilisateur selon son identifiant
 router.get("/get/:user_id", function(req,res){
-    models.user.find({
+    Product.find({
         where: {
             id: req.params.user_id
         },
@@ -56,7 +59,7 @@ router.get("/get/:user_id", function(req,res){
 
 //Supprime un utilisateur selon son identifiant
 router.get("/delete/:user_id", function(req,res){
-    models.user.destroy({
+    User.destroy({
         where: { id: req.params.user_id }
     }).then(function(result){
         res.json(result);
@@ -64,5 +67,6 @@ router.get("/delete/:user_id", function(req,res){
         if(err) throw err;
     });
 });
+
 
 module.exports = router;

@@ -2,8 +2,8 @@
 
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('library', {
-    userId: {
-      type: DataTypes.BIGINT,
+    id_User: {
+      type: DataTypes.INTEGER(11),
       allowNull: false,
       primaryKey: true,
       references: {
@@ -11,8 +11,8 @@ module.exports = function(sequelize, DataTypes) {
         key: 'id'
       }
     },
-    productId: {
-      type: DataTypes.BIGINT,
+    id_Product: {
+      type: DataTypes.INTEGER(11),
       allowNull: false,
       primaryKey: true,
       references: {
@@ -21,8 +21,7 @@ module.exports = function(sequelize, DataTypes) {
       }
     }
   }, {
-    freezeTableName: true,
-    timestamps: true,
-    underscored: true
+    tableName: 'library',
+    timestamps: true
   });
 };

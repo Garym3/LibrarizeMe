@@ -1,7 +1,16 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('friendship', {
+  return sequelize.define('borrow', {
+    id_Product: {
+      type: DataTypes.INTEGER(11),
+      allowNull: false,
+      primaryKey: true,
+      references: {
+        model: 'product',
+        key: 'id'
+      }
+    },
     id_User: {
       type: DataTypes.INTEGER(11),
       allowNull: false,
@@ -11,7 +20,7 @@ module.exports = function(sequelize, DataTypes) {
         key: 'id'
       }
     },
-    id_Friend: {
+    id_Borrower: {
       type: DataTypes.INTEGER(11),
       allowNull: false,
       primaryKey: true,
@@ -21,7 +30,7 @@ module.exports = function(sequelize, DataTypes) {
       }
     }
   }, {
-    tableName: 'friendship',
+    tableName: 'borrow',
     timestamps: true
   });
 };
