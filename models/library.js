@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('friendship', {
+  return sequelize.define('library', {
     userId: {
       type: DataTypes.BIGINT,
       allowNull: false,
@@ -11,12 +11,12 @@ module.exports = function(sequelize, DataTypes) {
         key: 'id'
       }
     },
-    friendId: {
+    productId: {
       type: DataTypes.BIGINT,
       allowNull: false,
       primaryKey: true,
       references: {
-        model: 'user',
+        model: 'product',
         key: 'id'
       }
     }

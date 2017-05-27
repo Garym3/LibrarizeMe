@@ -42,5 +42,9 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.BOOLEAN,
       allowNull: true
     }
-  });
-};
+  }, {
+    freezeTableName: true,
+    timestamps: true,
+    underscored: true
+  }
+)};

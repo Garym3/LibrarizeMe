@@ -24,7 +24,7 @@ router.get("/add/:libelle/:type/:description/:ean13Code", function(req, res){
 
 //Récupère tous les produits
 router.get("/", function(req,res,next){
-    models.product.findAll()
+    models.product.findAll({limit: 10})
     .then(function(result){
         res.json(result);
     }).catch(function(err){
@@ -32,7 +32,8 @@ router.get("/", function(req,res,next){
     });
 });
 
-//Récupère tous les produits selon le champ et la valeur saisis
+
+//Récupère tous les produits selon l'attribut et la valeur saisis
 router.get("/get/:attribute/:value", function(req, res){
     var attr = req.params.attribute;
     switch(attr) {
@@ -47,8 +48,9 @@ router.get("/get/:attribute/:value", function(req, res){
             break;
         case "libelle":
             models.product.findAll({
-                where: { libelle: req.params.value },
-                //where: { libelle: { $like: "%" + req.params.value + "%" } },
+                //where: { libelle: req.params.value },
+                where: { libelle: { $like: "%" + req.params.value + "%" } },
+                limit: 10                
             }).then(function(result){
                 res.json(result);
             }).catch(function(err){
@@ -58,6 +60,7 @@ router.get("/get/:attribute/:value", function(req, res){
         case "type":
             models.product.findAll({
                 where: { type: req.params.value },
+                limit: 10
             }).then(function(result){
                 res.json(result);
             }).catch(function(err){
@@ -67,6 +70,7 @@ router.get("/get/:attribute/:value", function(req, res){
         case "ean13Code":
             models.product.findAll({
                 where: { ean13Code: req.params.value },
+                limit: 10
             }).then(function(result){
                 res.json(result);
             }).catch(function(err){
@@ -93,4 +97,6 @@ router.get("/delete/:id", function(req,res){
         if(err) throw err;
     });
 });
+
+
 module.exports = router;

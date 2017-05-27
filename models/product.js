@@ -25,5 +25,9 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true,
       unique: true
     }
+  }, {
+    freezeTableName: true,
+    timestamps: true,
+    underscored: true
   });
 };
