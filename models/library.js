@@ -22,6 +22,7 @@ module.exports = function(sequelize, DataTypes) {
     }
   }, {
     tableName: 'library',
-    timestamps: true
+    timestamps: true,
+    paranoid: true
   });
 };

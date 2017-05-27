@@ -31,6 +31,7 @@ module.exports = function(sequelize, DataTypes) {
     }
   }, {
     tableName: 'borrow',
-    timestamps: true
+    timestamps: true,
+    paranoid: true
   });
 };

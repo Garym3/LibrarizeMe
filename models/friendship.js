@@ -22,6 +22,7 @@ module.exports = function(sequelize, DataTypes) {
     }
   }, {
     tableName: 'friendship',
-    timestamps: true
+    timestamps: true,
+    paranoid: true
   });
 };
