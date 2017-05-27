@@ -101,13 +101,13 @@ router.get("/get/details/:attribute/:value", function(req, res){
 router.get("/get/filterby/:type/:value", function(req, res){
     var attr = req.params.attribute;
     models.product.findAll({
-                where: { libelle: { $like: "%" + req.params.value + "%", $and: { type: req.params.type } } },
-                limit: 20
-            }).then(function(result){
-                res.json(result);
-            }).catch(function(err){
-                if (err) throw err;
-            });
+        where: { libelle: { $like: "%" + req.params.value + "%", $and: { type: req.params.type } } },
+        limit: 20
+    }).then(function(result){
+        res.json(result);
+    }).catch(function(err){
+        if (err) throw err;
+    });
 });
 
 /**
