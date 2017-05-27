@@ -7,6 +7,17 @@ var jwt = require('jsonwebtoken');
 var models = require('./models');
 var app = express();
 
+models.user.belongsToMany(models.product, {
+    through: models.library,
+    as: 'product',
+    foreignKey: 'id_Product'
+});
+models.product.belongsToMany(models.user, {
+    through: models.library,
+    as: 'user',
+    foreignKey: 'id_User'
+});
+
 models.sequelize.sync({
   //true = overwrite ; false = doesn't overwrite but nothing happen ; else, error if tables already exist
   //force: true
@@ -16,6 +27,7 @@ models.sequelize.sync({
 app.set('json spaces', 3);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
 //Middleware de vérification du token de connexion
 app.use(function(req, res, next){
   if(req.path.includes('auth')){
@@ -38,11 +50,13 @@ app.use(function(req, res, next){
 var products = require ('./routes/products');
 var users = require ('./routes/users');
 var auth = require('./routes/auth');
+var libraries = require('./routes/libraries');
 
 //Applications des routes
 app.use('/products', products);
 app.use('/users', users);
 app.use('/auth', auth);
+app.use('/libraries', libraries);
 
 //Route racine
 app.get('/', function (req, res) {

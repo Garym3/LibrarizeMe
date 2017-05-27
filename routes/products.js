@@ -9,16 +9,28 @@ var router  = express.Router();
 /**
  * Add a product
  */
-router.get("/add/:libelle/:type/:description/:ean13Code", function(req, res){
+router.get("/add/:libelle/:type/:description/:releaseDate/:price/:publisher/:authors/:ean13Code/:likes/:views", function(req, res){
     let libelle = req.params.libelle;
     let type = req.params.type;
     let description = req.params.description;
+    let releaseDate = req.params.releaseDate;
+    let price = req.params.price;
+    let publisher = req.params.publisher;
+    let authors = req.params.authors;
     let ean13Code = req.params.ean13Code;
+    let likes = req.params.likes;
+    let views = req.params.views;
     models.product.create({
         libelle: libelle,
         type: type,
         description: description,
-        ean13Code: ean13Code
+        releaseDate: releaseDate,
+        price: price,
+        publisher: publisher,
+        authors: authors,
+        ean13Code: ean13Code,
+        likes: likes,
+        views: views
     }).then(function(result){
         res.json(result);
     }).catch(function(err){
@@ -43,10 +55,11 @@ router.get("/", function(req,res,next){
  */
 router.get("/get/details/:attribute/:value", function(req, res){
     var attr = req.params.attribute;
-    switch(attr) {
+    var val = req.params.value;
+    switch(attr){
         case "id":
             models.product.find({
-                where: { id: req.params.value },
+                where: { id: val },
                 limit: 20
             }).then(function(result){
                 res.json(result);
@@ -56,8 +69,7 @@ router.get("/get/details/:attribute/:value", function(req, res){
             break;
         case "libelle":
             models.product.findAll({
-                //where: { libelle: req.params.value },
-                where: { libelle: { $like: "%" + req.params.value + "%" } },
+                where: { libelle: { $like: "%" + val + "%" } },
                 limit: 20                
             }).then(function(result){
                 res.json(result);
@@ -67,7 +79,7 @@ router.get("/get/details/:attribute/:value", function(req, res){
             break;
         case "type":
             models.product.findAll({
-                where: { type: req.params.value },
+                where: { type: val },
                 limit: 20
             }).then(function(result){
                 res.json(result);
@@ -77,7 +89,7 @@ router.get("/get/details/:attribute/:value", function(req, res){
             break;
         case "ean13Code":
             models.product.findAll({
-                where: { ean13Code: req.params.value },
+                where: { ean13Code: val },
                 limit: 20
             }).then(function(result){
                 res.json(result);
@@ -92,16 +104,21 @@ router.get("/get/details/:attribute/:value", function(req, res){
             }).catch(function(err){
                 if (err) throw err;
             });
-    } 
+    }
 });
 
 /**
- * Get all products depending on the entered id, libelle, type, or ean13 code and the value
+ * SEARCH BAR
+ * Get all products depending on the entered type and libelle
  */
 router.get("/get/filterby/:type/:value", function(req, res){
-    var attr = req.params.attribute;
     models.product.findAll({
-        where: { libelle: { $like: "%" + req.params.value + "%", $and: { type: req.params.type } } },
+        where: { 
+            libelle: { $like: "%" + req.params.value + "%"},
+            $and: { 
+                type: req.params.type
+            }
+        },
         limit: 20
     }).then(function(result){
         res.json(result);
@@ -117,7 +134,7 @@ router.get("/delete/:id", function(req,res){
     models.product.destroy({
         where: { id: req.params.id }
     }).then(function(result){
-        res.json(result);
+        res.json(result); // Retourne '1' true ou '0' false
     }).catch(function(err){
         if(err) throw err;
     });

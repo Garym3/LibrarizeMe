@@ -9,7 +9,7 @@ const router = express.Router();
 router.get('/login/:acc/:passwd', function(req, res){
     models.user.find({
         where : {
-            pseudo: req.params.acc,
+            email: req.params.acc,
             password: req.params.passwd
         }
     }).then(function(result){
@@ -22,46 +22,46 @@ router.get('/login/:acc/:passwd', function(req, res){
             res.send(print);
         } else {
             res.send(JSON.stringify({
-                message: "Error on authentificating. Maybe wrong account ot password."
+                message: "Error while authenticating. Maybe wrong account or password."
             }))
         }
     }).catch(function(err){
         if(err){
             res.send(JSON.stringify({
-                message: "Error on authentificating."
+                message: "Error while authenticating."
             }));
             throw err;
         } 
     });    
 });
 
-router.get('/forgotpasswd/:email', function(req, res){
+router.get('/resetpwd/:email', function(req, res){
     models.user.find({
         where : {
             email: req.params.email
         }
     }).then(function(result){
         if(result){
-            var newpasswd = generatePassword(10);
+            var newPassword = generatePassword(10);
 
             models.user.update({
-                password: newpasswd
+                password: newPassword
             }, {
                 where: {
                     email: req.params.email
                 }
-            }).then(function(updateresult){
-                if(updateresult){
+            }).then(function(updateResult){
+                if(updateResult){
                     res.send(JSON.stringify({
                         success: true,
                         message: "Password successfully updated."
                     }));
                 }
-            }).catch(function(updateerr){
-                if(updateerr){
+            }).catch(function(updateErr){
+                if(updateErr){
                     res.send(JSON.stringify({
                         success: false,
-                        message: "Error on updating password."
+                        message: "Error while updating password."
                     }));
                     throw err;
                 } 
@@ -70,14 +70,14 @@ router.get('/forgotpasswd/:email', function(req, res){
         } else {
             res.send(JSON.stringify({
                 success: false,
-                message: "Error on resetting password. No account on this email."
+                message: "Error while resetting password. No account with this email."
             }))
         }
     }).catch(function(err){
         if(err){
             res.send(JSON.stringify({
                 success: false,
-                message: "Error on ressting password."
+                message: "Error while reseting password."
             }));
             throw err;
         } 
