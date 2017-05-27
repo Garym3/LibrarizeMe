@@ -16,7 +16,7 @@ router.get("/add/:token/:email/:password/:pseudo/:lastname/:firstname/:phone/:is
     let phone = req.params.phone;
     let isSubscribed = req.params.isSubscribed;
 
-    models.users.create({
+    models.user.create({
         token: token,
         email: email,
         password: password,
@@ -34,7 +34,7 @@ router.get("/add/:token/:email/:password/:pseudo/:lastname/:firstname/:phone/:is
 
 //Récupère la liste des utilisateurs
 router.get("/", function(req,res){
-    models.users.findAll().then(function(result){
+    models.user.findAll().then(function(result){
         res.json(result);
     }).catch(function(err){
         if(err) throw err;
@@ -43,7 +43,7 @@ router.get("/", function(req,res){
 
 //Récupère l'utilisateur selon son identifiant
 router.get("/get/:user_id", function(req,res){
-    models.users.find({
+    models.user.find({
         where: {
             id: req.params.user_id
         },
@@ -56,7 +56,7 @@ router.get("/get/:user_id", function(req,res){
 
 //Supprime un utilisateur selon son identifiant
 router.get("/delete/:user_id", function(req,res){
-    models.users.destroy({
+    models.user.destroy({
         where: { id: req.params.user_id }
     }).then(function(result){
         res.json(result);
