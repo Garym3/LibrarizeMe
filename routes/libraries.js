@@ -10,26 +10,31 @@ var Library = models.library;
 /**
  * Add a product to the user's library
  */
-router.get("/add/:userid/:idProduct", function(req, res, next){
-    //Product.find({ where: id: req.params.idProduct }, include: ['User']
+router.get("/add/:idUser/:idProduct", function(req, res, next){
+    let userId = req.params.idUser;
+    let productId = req.params.idProduct;
+    Library.create({
+        id_User: userId,
+        id_Product: productId
+    }).then(function(result){
+        res.json(result);
+    }).catch(function(err){
+        if(err) throw err;
+    });
 });
 
-// Find all projects with a least one task where task.state === project.state
-router.get("/get/:userid", function(req, res, next){
-    Product.findAll({
+/**
+ * Get all products of the user's library
+ */
+router.get("/get/:idUser", function(req, res, next){
+    User.findAll({
+        where: { id: req.params.idUser },
         include: [{
-            model: Library,
-            through: 
-            {
-                where: 
-                {
-                    '$Library.id_User$': req.params.userid
-                }
-            }
+            model: Product, as: 'owns'            
         }]
-    }).then(function(data) {
-        res.json(data);
-    }).catch(function(err) {
+    }).then(libProducts => {
+        res.json(libProducts);
+    }).catch(function(err){
         if(err) throw err;
     });
 });

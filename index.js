@@ -5,21 +5,26 @@ var http = require("http");
 var fs = require('fs');
 var jwt = require('jsonwebtoken');
 var models = require('./models');
+var User = models.user;
+var Product = models.product;
+var Library = models.library;
 var app = express();
 
-models.user.belongsToMany(models.product, {
-    through: models.library,
-    as: 'product',
-    foreignKey: 'id_Product'
+User.belongsToMany(Product, {
+    through: Library,
+    foreignKey: 'id_User',
+    otherKey: 'id_Product',
+    as: 'owns'
 });
-models.product.belongsToMany(models.user, {
-    through: models.library,
-    as: 'user',
-    foreignKey: 'id_User'
+Product.belongsToMany(User, {
+    through: Library,
+    foreignKey: 'id_Product',
+    otherKey: 'id_User',
+    as: 'ownedBy'
 });
 
 models.sequelize.sync({
-  //true = overwrite ; false = doesn't overwrite but nothing happen ; else, error if tables already exist
+  //true = overwrite ; false = doesn't overwrite ; else, error if data already exists
   //force: true
 });
 
