@@ -37,6 +37,7 @@ router.get("/add/:idUser/:idFriend", function(req, res, next){
  */
 router.get("/get/:idUser", function(req, res, next){
     User.findAll({
+        //attributes: [], // Comment this to get user of 'idUser'
         where: { id: req.params.idUser },
         include: [{ model: User, as: 'friendWith' }],
         limit: 20
@@ -45,6 +46,55 @@ router.get("/get/:idUser", function(req, res, next){
     }).catch(function(err){
         if(err) {
             res.json("Error while querying a friendship.\n" + err);
+            throw err;
+        }
+    });
+});
+
+/**
+ * Get a specific users's friend
+ */
+router.get("/get/:idUser/:idFriend", function(req, res, next){
+    User.find({
+        //attributes: [], // Comment this to get user of 'idUser'
+        where: { id: req.params.idUser },
+        include: 
+        [{ 
+            model: User, as: 'friendWith', where: { id: req.params.idFriend } 
+        }]
+    }).then(friendsList => {
+        res.json(friendsList);
+    }).catch(function(err){
+        if(err) {
+            res.json("Error while querying a friendship.\n" + err);
+            throw err;
+        }
+    });
+});
+
+/**
+ * Get all owned products (library) of the users's friend
+ */
+router.get("/get/library/:idUser/:idFriend", function(req, res, next){ 
+    User.findAll({
+        //attributes: [], // Comment this to get user of 'idUser'
+        where: { id: req.params.idUser },
+        include:
+        [{
+            //attributes: [], // Comment this to get products and user of 'idFriend'
+            where: { id: req.params.idFriend },
+            model: User, as: 'friendWith',
+            include: 
+            [{
+                //attributes: [], // Comment this to get products of 'idFriend'
+                model: Product, as: 'owns'
+            }]
+        }]
+    }).then(friendProductsList => {
+        res.json(friendProductsList);
+    }).catch(function(err){
+        if(err) {
+            res.json("Error while querying a library's friend.\n" + err);
             throw err;
         }
     });
@@ -67,41 +117,6 @@ router.get("/delete/:idUser/:idFriend", function(req, res, next){
     }).catch(function(err){
         if(err) {
             res.json("Error while deleting a friendship.\n" + err);
-            throw err;
-        }
-    });
-});
-
-/**
- * Get all owned products (library) of the users's friend
- */
-router.get("/get/library/:idUser/:idFriend", function(req, res, next){
-    Product.findAll({
-        include: 
-        [{
-            model: User,
-            as: 'friendWith',
-            where: { 
-                id_User: req.params.idUser,
-                id_Friend: req.params.idFriend
-            },
-            include:[{
-                model: User,
-                as: 'owns',
-                include: 
-                [{
-                    model: Library,
-                    as: 'ownedBy',
-                    where: { id_User: req.params.idFriend }
-                }]
-            }]
-        }],
-        limit: 20
-    }).then(friendProductsList => {
-        res.json(friendProductsList);
-    }).catch(function(err){
-        if(err) {
-            res.json("Error while querying a library's friend.\n" + err);
             throw err;
         }
     });

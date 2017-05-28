@@ -31,6 +31,7 @@ router.get("/add/:idUser/:idProduct", function(req, res, next){
  */
 router.get("/get/:idUser", function(req, res, next){
     User.findAll({
+        //attributes: [], // Comment this to get user of 'idUser'
         where: { id: req.params.idUser },
         include: [{ model: Product, as: 'owns' }],
         limit: 20

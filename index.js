@@ -25,13 +25,18 @@ Product.belongsToMany(User, {
     otherKey: 'id_User',
     as: 'ownedBy'
 });
-
 User.belongsToMany(User, {
     through: Friendship,
     foreignKey: 'id_User',
     otherKey: 'id_Friend',
     as: 'friendWith'
 });
+/*Friendship.belongsToMany(Product, {
+    through: Library,
+    foreignKey: 'id_Friend',
+    otherKey: 'id_User',
+    as: 'friendLibrary'
+});*/
 
 /* END - SEQUELIZE ASSOCIATIONS */
 
@@ -69,6 +74,7 @@ var users = require ('./routes/users');
 var auth = require('./routes/auth');
 var libraries = require('./routes/libraries');
 var friendships = require('./routes/friendships');
+var borrows = require('./routes/borrows');
 
 //Applications des routes
 app.use('/products', products);
@@ -76,6 +82,7 @@ app.use('/users', users);
 app.use('/auth', auth);
 app.use('/libraries', libraries);
 app.use('/friendships', friendships);
+app.use('/borrows', borrows);
 
 //Route racine
 app.get('/', function (req, res) {
