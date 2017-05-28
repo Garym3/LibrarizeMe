@@ -8,7 +8,10 @@ var models = require('./models');
 var User = models.user;
 var Product = models.product;
 var Library = models.library;
+var Friendship = models.friendship;
 var app = express();
+
+/* BEGIN - SEQUELIZE ASSOCIATIONS */
 
 User.belongsToMany(Product, {
     through: Library,
@@ -23,6 +26,15 @@ Product.belongsToMany(User, {
     as: 'ownedBy'
 });
 
+User.belongsToMany(User, {
+    through: Friendship,
+    foreignKey: 'id_User',
+    otherKey: 'id_Friend',
+    as: 'friendWith'
+});
+
+/* END - SEQUELIZE ASSOCIATIONS */
+
 models.sequelize.sync({
   //true = overwrite ; false = doesn't overwrite ; else, error if data already exists
   //force: true
@@ -33,7 +45,7 @@ app.set('json spaces', 3);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-//Middleware de vérification du token de connexion
+//MiddleWare de vérification du token de connexion
 app.use(function(req, res, next){
   if(req.path.includes('auth')){
     next();
@@ -56,12 +68,14 @@ var products = require ('./routes/products');
 var users = require ('./routes/users');
 var auth = require('./routes/auth');
 var libraries = require('./routes/libraries');
+var friendships = require('./routes/friendships');
 
 //Applications des routes
 app.use('/products', products);
 app.use('/users', users);
 app.use('/auth', auth);
 app.use('/libraries', libraries);
+app.use('/friendships', friendships);
 
 //Route racine
 app.get('/', function (req, res) {

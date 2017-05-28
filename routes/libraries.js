@@ -19,7 +19,10 @@ router.get("/add/:idUser/:idProduct", function(req, res, next){
     }).then(function(result){
         res.json(result);
     }).catch(function(err){
-        if(err) throw err;
+        if(err) {
+            res.json("Error while adding a product to the user's library.\n" + err);
+            throw err;
+        }
     });
 });
 
@@ -29,13 +32,34 @@ router.get("/add/:idUser/:idProduct", function(req, res, next){
 router.get("/get/:idUser", function(req, res, next){
     User.findAll({
         where: { id: req.params.idUser },
-        include: [{
-            model: Product, as: 'owns'            
-        }]
+        include: [{ model: Product, as: 'owns' }],
+        limit: 20
     }).then(libProducts => {
         res.json(libProducts);
     }).catch(function(err){
-        if(err) throw err;
+        if(err) {
+            res.json("Error while querying the user's products.\n" + err);
+            throw err;
+        }
+    });
+});
+
+/**
+ * Delete a product of the user's library
+ */
+router.get("/delete/:idUser/:idProduct", function(req, res, next){
+    Library.destroy({
+        where: { 
+            id_User: req.params.idUser,
+            id_Product: req.params.idProduct
+        }
+    }).then(result => {
+        res.json(result); // return '1' = success or '0' = fail
+    }).catch(function(err){
+        if(err) {
+            res.json("Error while deleting a friendship.\n" + err);
+            throw err;
+        }
     });
 });
 

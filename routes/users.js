@@ -1,10 +1,9 @@
 'use strict';
 
-const express = require("express");
-const models = require("../models");
-const router = express.Router();
-const User = models.user;
-const Product = models.product;
+var express = require("express");
+var models = require("../models");
+var router = express.Router();
+var User = models.user;
 
 /* USER REGION */
 
@@ -35,7 +34,7 @@ router.get("/add/:email/:password/:pseudo/:lastname/:firstname/:phone/:isSubscri
 
 //Récupère la liste des utilisateurs
 router.get("/", function(req,res){
-    User.findAll().then(function(result){
+    User.findAll({limit: 20}).then(function(result){
         res.send(result);
     }).catch(function(err){
         if(err) throw err;
@@ -43,11 +42,23 @@ router.get("/", function(req,res){
 });
 
 //Récupère l'utilisateur selon son identifiant
-router.get("/get/:user_id", function(req,res){
+router.get("/get/id/:idUser", function(req,res){
     User.find({
-        where: {
-            id: req.params.user_id
-        },
+        where: { id: req.params.idUser },
+        limit: 20 
+    }).then(function(result){
+        res.send(result);
+    }).catch(function(err){
+        if(err) throw err;
+    });
+});
+
+//Récupère l'utilisateur selon son identifiant
+router.get("/get/pseudo/:pseudo", function(req,res){
+    let val = req.params.pseudo;
+    User.find({
+        where: { pseudo: { $like: "%" + val + "%" } },
+        limit: 20 
     }).then(function(result){
         res.send(result);
     }).catch(function(err){
@@ -56,9 +67,9 @@ router.get("/get/:user_id", function(req,res){
 });
 
 //Supprime un utilisateur selon son identifiant
-router.get("/delete/:user_id", function(req,res){
+router.get("/delete/:idUser", function(req,res){
     User.destroy({
-        where: { id: req.params.user_id }
+        where: { id: req.params.idUser }
     }).then(function(result){
         res.json(result);
     }).catch(function(err){
@@ -66,28 +77,24 @@ router.get("/delete/:user_id", function(req,res){
     });
 });
 
-router.get('/changepasswd/:iduser/:new', function(req, res){
+router.get('/changepasswd/:idUser/:newPasswd', function(req, res){
     User.find({
-        where: {
-            id: req.params.iduser
-        },
+        where: { id: req.params.idUser }   
     }).then(function(result){
         if(result){
             User.update({
-                password: req.params.new
+                password: req.params.newPasswd
             }, {
-                where: {
-                    id: req.params.iduser
-                }
-            }).then(function(updateresult){
-                if(updateresult){
+                where: { id: req.params.idUser }
+            }).then(function(updateResult){
+                if(updateResult){
                     res.send(JSON.stringify({
                         success: true,
                         message: "Password successfully updated."
                     }));
                 }
-            }).catch(function(updateerr){
-                if(updateerr){
+            }).catch(function(updateErr){
+                if(updateErr){
                     res.send(JSON.stringify({
                         success: false,
                         message: "Error while updating password."

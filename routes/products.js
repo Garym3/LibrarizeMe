@@ -3,6 +3,7 @@
 var models  = require('../models');
 var express = require('express');
 var router  = express.Router();
+var Product = models.product;
 
 /* PRODUCT REGION */
 
@@ -20,7 +21,7 @@ router.get("/add/:libelle/:type/:description/:releaseDate/:price/:publisher/:aut
     let ean13Code = req.params.ean13Code;
     let likes = req.params.likes;
     let views = req.params.views;
-    models.product.create({
+    Product.create({
         libelle: libelle,
         type: type,
         description: description,
@@ -34,7 +35,10 @@ router.get("/add/:libelle/:type/:description/:releaseDate/:price/:publisher/:aut
     }).then(function(result){
         res.json(result);
     }).catch(function(err){
-        if(err) throw err;
+        if(err) {
+            res.json("Error while adding for a product.\n" + err);
+            throw err;
+        }
     });
 });
 
@@ -42,11 +46,14 @@ router.get("/add/:libelle/:type/:description/:releaseDate/:price/:publisher/:aut
  * Get all products
  */
 router.get("/", function(req,res,next){
-    models.product.findAll({limit: 20})
+    Product.findAll({limit: 20})
     .then(function(result){
         res.json(result);
     }).catch(function(err){
-        if (err) throw err;
+        if(err) {
+            res.json("Error while querying for all products.\n" + err);
+            throw err;
+        }
     });
 });
 
@@ -54,55 +61,70 @@ router.get("/", function(req,res,next){
  * Get all products depending on the entered id, libelle, type, or ean13 code and the value
  */
 router.get("/get/details/:attribute/:value", function(req, res){
-    var attr = req.params.attribute;
-    var val = req.params.value;
+    let attr = req.params.attribute;
+    let val = req.params.value;
     switch(attr){
         case "id":
-            models.product.find({
+            Product.find({
                 where: { id: val },
                 limit: 20
             }).then(function(result){
                 res.json(result);
             }).catch(function(err){
-                if (err) throw err;
+                if(err) {
+                    res.json("Error while querying for a product's id.\n" + err);
+                    throw err;
+                }
             });
             break;
         case "libelle":
-            models.product.findAll({
+            Product.findAll({
                 where: { libelle: { $like: "%" + val + "%" } },
                 limit: 20                
             }).then(function(result){
                 res.json(result);
             }).catch(function(err){
-                if (err) throw err;
+                if(err) {
+                    res.json("Error while querying for a product's libelle.\n" + err);
+                    throw err;
+                }
             });
             break;
         case "type":
-            models.product.findAll({
+            Product.findAll({
                 where: { type: val },
                 limit: 20
             }).then(function(result){
                 res.json(result);
             }).catch(function(err){
-                if (err) throw err;
+                if(err) {
+                    res.json("Error while querying for a product's type.\n" + err);
+                    throw err;
+                }
             });
             break;
         case "ean13Code":
-            models.product.findAll({
+            Product.findAll({
                 where: { ean13Code: val },
                 limit: 20
             }).then(function(result){
                 res.json(result);
             }).catch(function(err){
-                if (err) throw err;
+                if(err) {
+                    res.json("Error while querying a product's ean13 code.\n" + err);
+                    throw err;
+                }
             });
             break;
         default:
-            models.product.find()
+            Product.find()
             .then(function(result){
                 res.json(null);
             }).catch(function(err){
-                if (err) throw err;
+                if(err) {
+                    res.json("Unknown error while querying for products.\n" + err);
+                    throw err;
+                }
             });
     }
 });
@@ -111,32 +133,36 @@ router.get("/get/details/:attribute/:value", function(req, res){
  * SEARCH BAR
  * Get all products depending on the entered type and libelle
  */
-router.get("/get/filterby/:type/:value", function(req, res){
-    models.product.findAll({
+router.get("/get/filterby/:type/:libelle", function(req, res){
+    Product.findAll({
         where: { 
-            libelle: { $like: "%" + req.params.value + "%"},
-            $and: { 
-                type: req.params.type
-            }
+            libelle: { $like: "%" + req.params.libelle + "%" },
+            $and: { type: req.params.type }
         },
         limit: 20
     }).then(function(result){
         res.json(result);
     }).catch(function(err){
-        if (err) throw err;
+        if(err) {
+            res.json("Error while querying for product with a search filter.\n" + err);
+            throw err;
+        }
     });
 });
 
 /**
  * Delete a product according to his ID
  */
-router.get("/delete/:id", function(req,res){
-    models.product.destroy({
-        where: { id: req.params.id }
+router.get("/delete/:idProduct", function(req,res){
+    Product.destroy({
+        where: { id: req.params.idProduct }
     }).then(function(result){
-        res.json(result); // Retourne '1' true ou '0' false
+        res.json(result); // return '1' = success or '0' = fail
     }).catch(function(err){
-        if(err) throw err;
+        if(err) {
+            res.json("Error while deleting a product via its id.\n" + err);
+            throw err;
+        }
     });
 });
 
