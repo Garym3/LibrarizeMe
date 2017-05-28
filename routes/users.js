@@ -58,7 +58,7 @@ router.get("/get/:user_id", function(req,res){
 //Supprime un utilisateur selon son identifiant
 router.get("/delete/:user_id", function(req,res){
     User.destroy({
-        where: { id: req.params.id }
+        where: { id: req.params.user_id }
     }).then(function(result){
         res.json(result);
     }).catch(function(err){
@@ -90,7 +90,7 @@ router.get('/changepasswd/:iduser/:new', function(req, res){
                 if(updateerr){
                     res.send(JSON.stringify({
                         success: false,
-                        message: "Error on updating password."
+                        message: "Error while updating password."
                     }));
                     throw err;
                 } 
@@ -98,7 +98,7 @@ router.get('/changepasswd/:iduser/:new', function(req, res){
         } else {
             res.send(JSON.stringify({
                 success: false,
-                message: "Error on changing password. No account for this ID."
+                message: "Error while changing password. No account with this ID."
             }))
         }        
         
@@ -106,7 +106,7 @@ router.get('/changepasswd/:iduser/:new', function(req, res){
         if(err){
             res.send(JSON.stringify({
                 success: false,
-                message: "Error on changing password."
+                message: "Error while changing password."
             }));
             throw err;
         } 
