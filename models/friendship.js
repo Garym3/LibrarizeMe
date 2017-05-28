@@ -5,20 +5,12 @@ module.exports = function(sequelize, DataTypes) {
     id_User: {
       type: DataTypes.INTEGER(11),
       allowNull: false,
-      primaryKey: true,
-      references: {
-        model: 'user',
-        key: 'id'
-      }
+      primaryKey: true
     },
     id_Friend: {
       type: DataTypes.INTEGER(11),
       allowNull: false,
-      primaryKey: true,
-      references: {
-        model: 'user',
-        key: 'id'
-      }
+      primaryKey: true
     }
   }, {
     tableName: 'friendship',

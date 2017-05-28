@@ -7,7 +7,9 @@ var User = models.user;
 
 /* USER REGION */
 
-//Crée un utilisateur 
+/**
+ * Create an user
+ */ 
 router.get("/add/:email/:password/:pseudo/:lastname/:firstname/:phone/:isSubscribed", function(req, res, next){
     let email = req.params.email;
     let password = req.params.password;
@@ -32,7 +34,9 @@ router.get("/add/:email/:password/:pseudo/:lastname/:firstname/:phone/:isSubscri
     });
 });
 
-//Récupère la liste des utilisateurs
+/**
+ * Get a list of all users
+ */
 router.get("/", function(req,res){
     User.findAll({
         deletedAt: null,
@@ -44,7 +48,9 @@ router.get("/", function(req,res){
     });
 });
 
-//Récupère l'utilisateur selon son identifiant
+/**
+ * Get an user via its id
+ */
 router.get("/get/id/:idUser", function(req,res){
     User.find({
         where: { id: req.params.idUser, deletedAt: null },
@@ -56,11 +62,12 @@ router.get("/get/id/:idUser", function(req,res){
     });
 });
 
-//Récupère l'utilisateur selon son identifiant
+/**
+ * Get an user via its pseudo
+ */
 router.get("/get/pseudo/:pseudo", function(req,res){
-    let val = req.params.pseudo;
     User.find({
-        where: { pseudo: { $like: "%" + val + "%" }, deletedAt: null },
+        where: { pseudo: { $like: "%" + req.params.pseudo + "%" }, deletedAt: null },
         limit: 20 
     }).then(function(result){
         res.send(result);
@@ -69,15 +76,28 @@ router.get("/get/pseudo/:pseudo", function(req,res){
     });
 });
 
-router.get('/changepasswd/:idUser/:newPasswd', function(req, res){
+/**
+ * Get an user via its email
+ */
+router.get("/get/email/:email", function(req,res){
     User.find({
-        where: { id: req.params.idUser }   
+        where: { email: { $like: "%" + req.params.email + "%" }, deletedAt: null },
+        limit: 20 
     }).then(function(result){
+        res.send(result);
+    }).catch(function(err){
+        if(err) throw err;
+    });
+});
+
+/**
+ * Set a chosen new password 
+ */
+router.get('/changepassword/:idUser/:newPassword', function(req, res){
+    User.find({ where: { id: req.params.idUser } }).then(function(result){
         if(result){
-            User.update({
-                password: req.params.newPasswd
-            }, {
-                where: { id: req.params.idUser, deletedAt: null }
+            User.update({ password: req.params.newPassword }, 
+            { where: { id: req.params.idUser, deletedAt: null }
             }).then(function(updateResult){
                 if(updateResult){
                     res.send(JSON.stringify({
@@ -112,11 +132,13 @@ router.get('/changepasswd/:idUser/:newPasswd', function(req, res){
     });
 });
 
-//Supprime un utilisateur selon son identifiant
+/**
+ * Delete an user via its id
+ */
 router.get("/delete/:idUser", function(req,res){
     User.destroy({
         where: 
-        { 
+        {
             id: req.params.idUser,
             deletedAt: null
         }

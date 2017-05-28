@@ -122,7 +122,7 @@ router.get("/get/details/:attribute/:value", function(req, res){
         default:
             Product.find()
             .then(function(result){
-                res.json(null);
+                res.json("Unknown error while querying for products.\n" + null);
             }).catch(function(err){
                 if(err) {
                     res.json("Unknown error while querying for products.\n" + err);
