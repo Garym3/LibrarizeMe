@@ -60,7 +60,7 @@ router.get("/get/:idUser/:idFriend", function(req, res, next){
         where: { id: req.params.idUser, deletedAt: null },
         include: 
         [{ 
-            model: User, as: 'friendWith', where: { id: req.params.idFriend } 
+            model: User, as: 'friendWith', where: { id: req.params.idFriend, deletedAt: null } 
         }]
     }).then(friendsList => {
         res.json(friendsList);

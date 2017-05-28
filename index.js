@@ -31,18 +31,30 @@ User.belongsToMany(User, {
     otherKey: 'id_Friend',
     as: 'friendWith'
 });
-/*Friendship.belongsToMany(Product, {
-    through: Library,
-    foreignKey: 'id_Friend',
+User.belongsToMany(User, {
+    through: Borrow,
+    foreignKey: 'id_Lender',
+    otherKey: 'id_Borrower',
+    as: 'loanWith' // A un prêt avec...
+});
+Product.belongsToMany(User, {
+    through: Borrow,
+    foreignKey: 'id_Product',
     otherKey: 'id_User',
-    as: 'friendLibrary'
-});*/
+    as: 'borrowed' // emprunté
+});
+User.belongsToMany(Product, {
+    through: Borrow,
+    foreignKey: 'id_User',
+    otherKey: 'id_Product',
+    as: 'lent' // prêté
+});
 
 /* END - SEQUELIZE ASSOCIATIONS */
 
 models.sequelize.sync({
   //true = overwrite ; false = doesn't overwrite ; else, error if data already exists
-  //force: true
+  force: true
 });
 
 //MiddleWares

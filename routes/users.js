@@ -18,14 +18,13 @@ router.get("/add/:email/:password/:pseudo/:lastname/:firstname/:phone/:isSubscri
     let firstname = req.params.firstname;
     let phone = req.params.phone;
     let isSubscribed = req.params.isSubscribed;
-
     User.create({
         email: email,
         password: password,
         pseudo: pseudo,
         lastname: lastname,
         firstname: firstname,
-        phone: phone,
+        phone: { phone, is: ['[0-9]'] },
         isSubscribed: isSubscribed
     }).then(function(result){
         res.json(result);
