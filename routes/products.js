@@ -46,7 +46,10 @@ router.get("/add/:libelle/:type/:description/:releaseDate/:price/:publisher/:aut
  * Get all products
  */
 router.get("/", function(req,res,next){
-    Product.findAll({limit: 20})
+    Product.findAll({
+        where: { deletedAt: null},
+        limit: 20
+    })
     .then(function(result){
         res.json(result);
     }).catch(function(err){
@@ -66,7 +69,7 @@ router.get("/get/details/:attribute/:value", function(req, res){
     switch(attr){
         case "id":
             Product.find({
-                where: { id: val },
+                where: { id: val, deletedAt: null },
                 limit: 20
             }).then(function(result){
                 res.json(result);
@@ -79,7 +82,7 @@ router.get("/get/details/:attribute/:value", function(req, res){
             break;
         case "libelle":
             Product.findAll({
-                where: { libelle: { $like: "%" + val + "%" } },
+                where: { libelle: { $like: "%" + val + "%" }, deletedAt: null },
                 limit: 20                
             }).then(function(result){
                 res.json(result);
@@ -92,7 +95,7 @@ router.get("/get/details/:attribute/:value", function(req, res){
             break;
         case "type":
             Product.findAll({
-                where: { type: val },
+                where: { type: val, deletedAt: null },
                 limit: 20
             }).then(function(result){
                 res.json(result);
@@ -105,7 +108,7 @@ router.get("/get/details/:attribute/:value", function(req, res){
             break;
         case "ean13Code":
             Product.findAll({
-                where: { ean13Code: val },
+                where: { ean13Code: val, deletedAt: null },
                 limit: 20
             }).then(function(result){
                 res.json(result);
@@ -137,7 +140,8 @@ router.get("/get/filterby/:type/:libelle", function(req, res){
     Product.findAll({
         where: { 
             libelle: { $like: "%" + req.params.libelle + "%" },
-            $and: { type: req.params.type }
+            type: req.params.type,
+            deletedAt: null
         },
         limit: 20
     }).then(function(result){
@@ -155,7 +159,11 @@ router.get("/get/filterby/:type/:libelle", function(req, res){
  */
 router.get("/delete/:idProduct", function(req,res){
     Product.destroy({
-        where: { id: req.params.idProduct }
+        where: 
+        { 
+            id: req.params.idProduct,
+            deletedAt: null
+        }
     }).then(function(result){
         res.json(result); // return '1' = success or '0' = fail
     }).catch(function(err){

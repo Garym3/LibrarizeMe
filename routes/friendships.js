@@ -38,7 +38,7 @@ router.get("/add/:idUser/:idFriend", function(req, res, next){
 router.get("/get/:idUser", function(req, res, next){
     User.findAll({
         //attributes: [], // Comment this to get user of 'idUser'
-        where: { id: req.params.idUser },
+        where: { id: req.params.idUser, deletedAt: null },
         include: [{ model: User, as: 'friendWith' }],
         limit: 20
     }).then(friendsList => {
@@ -57,7 +57,7 @@ router.get("/get/:idUser", function(req, res, next){
 router.get("/get/:idUser/:idFriend", function(req, res, next){
     User.find({
         //attributes: [], // Comment this to get user of 'idUser'
-        where: { id: req.params.idUser },
+        where: { id: req.params.idUser, deletedAt: null },
         include: 
         [{ 
             model: User, as: 'friendWith', where: { id: req.params.idFriend } 
@@ -78,16 +78,16 @@ router.get("/get/:idUser/:idFriend", function(req, res, next){
 router.get("/get/library/:idUser/:idFriend", function(req, res, next){ 
     User.findAll({
         //attributes: [], // Comment this to get user of 'idUser'
-        where: { id: req.params.idUser },
+        where: { id: req.params.idUser, deletedAt: null },
         include:
         [{
             //attributes: [], // Comment this to get products and user of 'idFriend'
-            where: { id: req.params.idFriend },
+            where: { id: req.params.idFriend, deletedAt: null },
             model: User, as: 'friendWith',
             include: 
             [{
                 //attributes: [], // Comment this to get products of 'idFriend'
-                model: Product, as: 'owns'
+                model: Product, as: 'owns', where: { deletedAt: null }
             }]
         }]
     }).then(friendProductsList => {
@@ -104,13 +104,15 @@ router.get("/get/library/:idUser/:idFriend", function(req, res, next){
  * Delete a users's friend
  * 
  * It needs to be done twice, each time for each friendship's side
- *  if the friendship is already mutual.
+ * only if the friendship is already mutual.
  */
 router.get("/delete/:idUser/:idFriend", function(req, res, next){
     Friendship.destroy({
-        where: { 
+        where: 
+        { 
             id_User: req.params.idUser,
-            id_Friend: req.params.idFriend
+            id_Friend: req.params.idFriend,
+            deletedAt: null
         }
     }).then(result => {
         res.json(result); // return '1' = success or '0' = fail

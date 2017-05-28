@@ -34,7 +34,10 @@ router.get("/add/:email/:password/:pseudo/:lastname/:firstname/:phone/:isSubscri
 
 //Récupère la liste des utilisateurs
 router.get("/", function(req,res){
-    User.findAll({limit: 20}).then(function(result){
+    User.findAll({
+        deletedAt: null,
+        limit: 20
+    }).then(function(result){
         res.send(result);
     }).catch(function(err){
         if(err) throw err;
@@ -44,7 +47,7 @@ router.get("/", function(req,res){
 //Récupère l'utilisateur selon son identifiant
 router.get("/get/id/:idUser", function(req,res){
     User.find({
-        where: { id: req.params.idUser },
+        where: { id: req.params.idUser, deletedAt: null },
         limit: 20 
     }).then(function(result){
         res.send(result);
@@ -57,21 +60,10 @@ router.get("/get/id/:idUser", function(req,res){
 router.get("/get/pseudo/:pseudo", function(req,res){
     let val = req.params.pseudo;
     User.find({
-        where: { pseudo: { $like: "%" + val + "%" } },
+        where: { pseudo: { $like: "%" + val + "%" }, deletedAt: null },
         limit: 20 
     }).then(function(result){
         res.send(result);
-    }).catch(function(err){
-        if(err) throw err;
-    });
-});
-
-//Supprime un utilisateur selon son identifiant
-router.get("/delete/:idUser", function(req,res){
-    User.destroy({
-        where: { id: req.params.idUser }
-    }).then(function(result){
-        res.json(result);
     }).catch(function(err){
         if(err) throw err;
     });
@@ -85,7 +77,7 @@ router.get('/changepasswd/:idUser/:newPasswd', function(req, res){
             User.update({
                 password: req.params.newPasswd
             }, {
-                where: { id: req.params.idUser }
+                where: { id: req.params.idUser, deletedAt: null }
             }).then(function(updateResult){
                 if(updateResult){
                     res.send(JSON.stringify({
@@ -118,6 +110,21 @@ router.get('/changepasswd/:idUser/:newPasswd', function(req, res){
             throw err;
         } 
     });
-})
+});
+
+//Supprime un utilisateur selon son identifiant
+router.get("/delete/:idUser", function(req,res){
+    User.destroy({
+        where: 
+        { 
+            id: req.params.idUser,
+            deletedAt: null
+        }
+    }).then(function(result){
+        res.json(result);
+    }).catch(function(err){
+        if(err) throw err;
+    });
+});
 
 module.exports = router;

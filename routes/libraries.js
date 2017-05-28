@@ -32,7 +32,7 @@ router.get("/add/:idUser/:idProduct", function(req, res, next){
 router.get("/get/:idUser", function(req, res, next){
     User.findAll({
         //attributes: [], // Comment this to get user of 'idUser'
-        where: { id: req.params.idUser },
+        where: { id: req.params.idUser, deletedAt: null },
         include: [{ model: Product, as: 'owns' }],
         limit: 20
     }).then(libProducts => {
@@ -50,9 +50,11 @@ router.get("/get/:idUser", function(req, res, next){
  */
 router.get("/delete/:idUser/:idProduct", function(req, res, next){
     Library.destroy({
-        where: { 
+        where: 
+        { 
             id_User: req.params.idUser,
-            id_Product: req.params.idProduct
+            id_Product: req.params.idProduct,
+            deletedAt: null
         }
     }).then(result => {
         res.json(result); // return '1' = success or '0' = fail
