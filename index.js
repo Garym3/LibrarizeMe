@@ -1,4 +1,4 @@
-//Definition des modules
+//Modules definitions
 var express = require('express')
 var bodyParser = require('body-parser');
 var http = require("http");
@@ -15,41 +15,41 @@ var app = express();
 /* BEGIN - SEQUELIZE ASSOCIATIONS */
 
 User.belongsToMany(Product, {
-    through: Library,
-    foreignKey: 'id_User',
-    otherKey: 'id_Product',
-    as: 'owns'
+  through: Library,
+  foreignKey: 'id_User',
+  otherKey: 'id_Product',
+  as: 'owns'
 });
 Product.belongsToMany(User, {
-    through: Library,
-    foreignKey: 'id_Product',
-    otherKey: 'id_User',
-    as: 'ownedBy'
+  through: Library,
+  foreignKey: 'id_Product',
+  otherKey: 'id_User',
+  as: 'ownedBy'
 });
 User.belongsToMany(User, {
-    through: Friendship,
-    foreignKey: 'id_User',
-    otherKey: 'id_Friend',
-    as: 'friendWith'
+  through: Friendship,
+  foreignKey: 'id_User',
+  otherKey: 'id_Friend',
+  as: 'friendWith'
 });
 User.belongsToMany(User, {
-    through: Borrow,
-    foreignKey: 'id_Lender',
-    otherKey: 'id_Borrower',
-    as: 'loanWith' // A un prêt avec...
-});
-/*Product.belongsToMany(User, {
-    through: Borrow,
-    foreignKey: 'id_Borrower',
-    otherKey: 'id_Lender',
-    as: 'borrowedBy' // emprunté par
+  through: Borrow,
+  foreignKey: 'id_Lender',
+  otherKey: 'id_Borrower',
+  as: 'loanWith'
 });
 User.belongsToMany(Product, {
-    through: Borrow,
-    foreignKey: 'id_Lender',
-    otherKey: 'id_Product',
-    as: 'lentBy' // prêté par
-});*/
+  through: Borrow,
+  foreignKey: 'id_Lender',
+  otherKey: 'id_Product',
+  as: 'lent'
+});
+User.belongsToMany(Product, {
+  through: Borrow,
+  foreignKey: 'id_Borrower',
+  otherKey: 'id_Product',
+  as: 'borrowed'
+});
 
 /* END - SEQUELIZE ASSOCIATIONS */
 
@@ -63,17 +63,17 @@ app.set('json spaces', 3);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-//MiddleWare de vérification du token de connexion
-app.use(function(req, res, next){
-  if(req.path.includes('auth')){
+//MiddleWare token verification
+app.use(function (req, res, next) {
+  if (req.path.includes('auth')) {
     next();
   } else {
     var token = req.get('Authorization');
-    var passwd = fs.readFileSync('configuration/passphrasetoken').toString();
+    var passwd = fs.readFileSync('config/passphrasetoken').toString();
     try {
       var decoded = jwt.verify(token, passwd);
       next();
-    } catch(err) {
+    } catch (err) {
       res.send(JSON.stringify({
         message: "Invalid token."
       }, null, 3));
@@ -81,15 +81,14 @@ app.use(function(req, res, next){
   }
 });
 
-//Définition des routes
-var products = require ('./routes/products');
-var users = require ('./routes/users');
+//Routes' definitions
+var products = require('./routes/products');
+var users = require('./routes/users');
 var auth = require('./routes/auth');
 var libraries = require('./routes/libraries');
 var friendships = require('./routes/friendships');
 var borrows = require('./routes/borrows');
 
-//Applications des routes
 app.use('/products', products);
 app.use('/users', users);
 app.use('/auth', auth);
@@ -97,11 +96,11 @@ app.use('/libraries', libraries);
 app.use('/friendships', friendships);
 app.use('/borrows', borrows);
 
-//Route racine
+//Root' route
 app.get('/', function (req, res) {
   res.setHeader("Content-Type", "application/json");
-  var json = JSON.stringify({ 
-    message: "LibrarizeMe API", 
+  var json = JSON.stringify({
+    message: "LibrarizeMe API",
   }, null, 3);
   res.send(json);
 })

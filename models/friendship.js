@@ -1,6 +1,6 @@
 /* jshint indent: 2 */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define('friendship', {
     id_User: {
       type: DataTypes.INTEGER(11),
@@ -13,8 +13,8 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true
     }
   }, {
-    tableName: 'friendship',
-    timestamps: true,
-    paranoid: true
-  });
+      tableName: 'friendship',
+      timestamps: true,
+      paranoid: true
+    });
 };
