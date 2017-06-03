@@ -9,6 +9,7 @@ var User = models.user;
 var Product = models.product;
 var Library = models.library;
 var Friendship = models.friendship;
+var Borrow = models.borrow;
 var app = express();
 
 /* BEGIN - SEQUELIZE ASSOCIATIONS */
@@ -37,24 +38,24 @@ User.belongsToMany(User, {
     otherKey: 'id_Borrower',
     as: 'loanWith' // A un prêt avec...
 });
-Product.belongsToMany(User, {
+/*Product.belongsToMany(User, {
     through: Borrow,
-    foreignKey: 'id_Product',
-    otherKey: 'id_User',
-    as: 'borrowed' // emprunté
+    foreignKey: 'id_Borrower',
+    otherKey: 'id_Lender',
+    as: 'borrowedBy' // emprunté par
 });
 User.belongsToMany(Product, {
     through: Borrow,
-    foreignKey: 'id_User',
+    foreignKey: 'id_Lender',
     otherKey: 'id_Product',
-    as: 'lent' // prêté
-});
+    as: 'lentBy' // prêté par
+});*/
 
 /* END - SEQUELIZE ASSOCIATIONS */
 
 models.sequelize.sync({
   //true = overwrite ; false = doesn't overwrite ; else, error if data already exists
-  force: true
+  //force: true
 });
 
 //MiddleWares

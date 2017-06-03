@@ -8,56 +8,70 @@ var Library = models.library;
 var Borrow = models.borrow;
 
 /**
- * Set a 'loan' where an user borrows something from another user
+ * Set a 'loan' where an user borrows something from another user, or returns it if it exists
  * Lender = gives to
  * Borrower = receives from
  */
-router.get("/add/:idLender/:idBorrower/:idProduct", function(req, res, next){
-    let lender_userId = req.params.idLender;
-    let borrower_userId = req.params.idBorrower;
+router.get("/add/:idProduct/:idLender/:idBorrower", function(req, res, next){
     let productId = req.params.idProduct;
-    Borrow.create({
-        id_Product: productId,
-        id_Lender: lender_userId,
-        id_Borrower: borrower_userId
-    }).then(function(result){
-        // check if all associated objects are as expected
-        /*Product.setUsers([user1, user2]).then(() => {
-        return project.hasUsers([user1]);
-        }).then(result => {
-        // result would be false
-        return project.hasUsers([user1, user2]);
-        }).then(result => {
-        // result would be true
-        })*/
-        res.json(result);
-    }).catch(function(err){
-        if(err) {
-            res.json("Error while setting a loan.\n" + err);
-            throw err;
-        }
-    });
+    let lenderId = req.params.idLender;
+    let borrowerId = req.params.idBorrower;
+    if(lenderId != borrowerId) {
+        /*Borrow.findOrCreate({
+            where: { 
+                    id_Product: productId,
+                    id_Lender: { $or: { $eq: lenderId, $eq: borrowerId } },
+                    id_Borrower: { $or: { $eq: borrowerId, $eq: lenderId } },
+                deletedAt: null
+            }, 
+            defaults: { // Creation if it doesn't exist
+                id_Product: productId,
+                id_Lender: lenderId,
+                id_Borrower: borrowerId
+            }
+        }).then(function(result){
+            res.json(result);
+        }).catch(function(err){
+            if(err) {
+                res.json("Error while setting a loan.\n" + err);
+                throw err;
+            }
+        });*/
+        Borrow.upsert({
+            id_Product: productId,
+            id_Lender: lenderId,
+            id_Borrower: borrowerId
+        }).then(function(result){
+            res.json(result);
+        }).catch(function(err){
+            if(err) {
+                res.json("Error while setting a loan.\n" + err);
+                throw err;
+            }
+        });
+    } else {
+        res.json("ERROR: Borrower id and lender id are the same.");
+    }
 });
 
 
 /**
- * Get all users's loans
+ * Get all users's borrowings
  */
-/*router.get("/get/:idUser", function(req, res, next){
-    User.findAll({
-        //attributes: [], // Comment this to get user of 'idUser'
-        where: { id: req.params.idUser, deletedAt: null },
-        include: [{ model: User, as: 'friendWith' }],
+router.get("/get/:borrowerId", function(req, res, next){
+    Borrow.findAll({
+        where: { id_Borrower: req.params.borrowerId, deletedAt: null },
+        //include: [{ model: User, as: 'loanWith', where: { id_Borrower: req.params.userId } }],
         limit: 20
-    }).then(friendsList => {
-        res.json(friendsList);
+    }).then(borrowingsList => {
+        res.json(borrowingsList);
     }).catch(function(err){
         if(err) {
             res.json("Error while querying a friendship.\n" + err);
             throw err;
         }
     });
-});*/
+});
 
 /**
  * Get a specific users's friend

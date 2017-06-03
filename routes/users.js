@@ -24,7 +24,7 @@ router.get("/add/:email/:password/:pseudo/:lastname/:firstname/:phone/:isSubscri
         pseudo: pseudo,
         lastname: lastname,
         firstname: firstname,
-        phone: { phone, is: ['[0-9]'] },
+        phone: phone,
         isSubscribed: isSubscribed
     }).then(function(result){
         res.json(result);
