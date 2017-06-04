@@ -17,9 +17,9 @@ router.get("/add/:idProduct/:idLender/:idBorrower", function (req, res, next) {
     let lenderId = req.params.idLender;
     let borrowerId = req.params.idBorrower;
     if (lenderId != borrowerId) {
-        // Check if a similar loan already exists
+        // At first, check if a similar loan already exists
         Borrow.findOrCreate({
-            where: { //TODO: empêcher d'emprunter un produit qu'on a prêté
+            where: { //TODO: empêcher d'emprunter un produit qu'on a actuellement prêté
                 id_Product: productId,
                 id_Lender: lenderId,
                 id_Borrower: borrowerId,
@@ -63,6 +63,5 @@ router.get("/get/:idUser", function (req, res, next) {
         }
     });
 });
-
 
 module.exports = router;

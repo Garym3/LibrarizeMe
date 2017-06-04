@@ -14,7 +14,7 @@ router.get('/login/:acc/:passwd', function(req, res){
         }
     }).then(function(result){
         if(result){
-            var passwd = fs.readFileSync('configuration/passphrasetoken').toString();
+            var passwd = fs.readFileSync('config/passphrasetoken').toString();
             var token = jwt.sign({ data: result.lastname+"_"+result.firstname+"_authOK" }, passwd, { expiresIn: '12h' });
             var print = JSON.stringify({
                 token: token
