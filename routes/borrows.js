@@ -3,8 +3,8 @@ var express = require('express');
 var router = express.Router();
 var User = models.user;
 var Product = models.product;
-var Friendship = models.friendship;
-var Library = models.library;
+var funcsFriends = require('./funcs_friendships.js');
+var funcsLibrary = require('./funcs_librairies.js');
 var Borrow = models.borrow;
 
 /**
@@ -16,8 +16,33 @@ router.get("/add/:idProduct/:idLender/:idBorrower", function (req, res, next) {
     let productId = req.params.idProduct;
     let lenderId = req.params.idLender;
     let borrowerId = req.params.idBorrower;
-    if (lenderId != borrowerId) {
-        // At first, check if a similar loan already exists
+    let begin = true;
+
+    if (lenderId == borrowerId) {
+        res.send(JSON.stringify({
+            success: false,
+            message: "Borrower id and lender id are the same."
+        }));
+        begin = false;
+    }
+
+    /*if(!funcsLibrary.verifyIfUserHasProduct(lenderId, productId)){
+        res.send(JSON.stringify({
+            success: false,
+            message: "User doesn't have the product on his library."
+        }));
+        begin = false;
+    }*/
+
+    if(funcsFriends.verifyFriendShip(lenderId, borrowerId) == false){
+        res.send(JSON.stringify({
+            success: false,
+            message: "User is not friend with the borrower."
+        }));
+        begin = false;
+    }
+
+    if(begin){
         Borrow.findOrCreate({
             where: { //TODO: empêcher d'emprunter un produit qu'on a actuellement prêté
                 id_Product: productId,
@@ -38,9 +63,7 @@ router.get("/add/:idProduct/:idLender/:idBorrower", function (req, res, next) {
                 throw err;
             }
         });
-    } else {
-        res.json("ERROR: Borrower id and lender id are the same.");
-    }
+    }        
 });
 
 

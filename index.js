@@ -67,6 +67,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(function (req, res, next) {
   if (req.path.includes('auth')) {
     next();
+  } else if(req.path.includes('users/add')) {
+    next();
   } else {
     var token = req.get('Authorization');
     var passwd = fs.readFileSync('config/passphrasetoken').toString();
