@@ -17,16 +17,16 @@ router.get("/add/:idUser/:idProduct", function (req, res, next) {
         id_User: userId,
         id_Product: productId
     }).then(function (result) {
-        res.json(JSON.stringify({
+        res.json({
             success: true,
             message: "Product has been succesfully added to the library or updated if it already exists in the library."
-        }));
+        });
     }).catch(function (err) {
         if (err) {
-            res.json(JSON.stringify({
+            res.json({
                 success: false,
                 message: "Error while adding a product to the user's library."
-            }));
+            });
             throw err;
         }
     });
@@ -45,10 +45,10 @@ router.get("/get/:idUser", function (req, res, next) {
         res.json(libProducts);
     }).catch(function (err) {
         if (err) {
-            res.json(JSON.stringify({
+            res.json({
                 success: false,
                 message: "Error while querying the user's products."
-            }));
+            });
             throw err;
         }
     });
@@ -69,10 +69,10 @@ router.get("/delete/:idUser/:idProduct", function (req, res, next) {
         res.json(result); // return '1' = success or '0' = fail
     }).catch(function (err) {
         if (err) {
-            res.json(JSON.stringify({
+            res.json({
                 success: false,
                 message: "Error while deleting a product from the user's library."
-            }));
+            });
             throw err;
         }
     });

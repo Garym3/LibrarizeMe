@@ -19,6 +19,10 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true,
       unique: false
+    },
+    isDone: {
+      type: DataTypes.INTEGER(1),
+      allowNull: false
     }
   }, {
       tableName: 'borrow',

@@ -27,16 +27,16 @@ router.get("/add/:email/:password/:pseudo/:lastname/:firstname/:phone/:isSubscri
         phone: phone,
         isSubscribed: isSubscribed
     }).then(function (result) {
-        res.json(JSON.stringify({
+        res.json({
             success: true,
             message: "User has been succesfully created or updated if he already exists."
-        }));
+        });
     }).catch(function (err) {
         if (err) {
-            res.json(JSON.stringify({
+            res.json({
                 success: false,
                 message: "Unhandled error while creating the user."
-            }));
+            });
             throw err;
         }
     });
@@ -52,7 +52,13 @@ router.get("/", function (req, res) {
     }).then(function (result) {
         res.json(result);
     }).catch(function (err) {
-        if (err) throw err;
+        if (err) {
+            res.json({
+                success: false,
+                message: "Unhandled error while querying all users."
+            });
+            throw err;
+        }
     });
 });
 
@@ -66,7 +72,13 @@ router.get("/get/id/:idUser", function (req, res) {
     }).then(function (result) {
         res.json(result);
     }).catch(function (err) {
-        if (err) throw err;
+        if (err) {
+            res.json({
+                success: false,
+                message: "Unhandled error while querying user's id."
+            });
+            throw err;
+        }
     });
 });
 
@@ -80,7 +92,13 @@ router.get("/get/pseudo/:pseudo", function (req, res) {
     }).then(function (result) {
         res.json(result);
     }).catch(function (err) {
-        if (err) throw err;
+        if (err) {
+            res.json({
+                success: false,
+                message: "Unhandled error while querying user's pseudo."
+            });
+            throw err;
+        }
     });
 });
 
@@ -94,7 +112,13 @@ router.get("/get/email/:email", function (req, res) {
     }).then(function (result) {
         res.json(result);
     }).catch(function (err) {
-        if (err) throw err;
+        if (err) {
+            res.json({
+                success: false,
+                message: "Unhandled error while querying user's email."
+            });
+            throw err;
+        }
     });
 });
 
@@ -110,18 +134,16 @@ router.get("/update/:idUser/:lastname/:firstname/:phone", function (req, res) {
         }, 
         { where: { id: req.params.idUser }
     }).then(function (result) {
-        res.json(
-            JSON.stringify({
+        res.json({
                 success: true,
                 message: "User successfully updated."
-            })
-        );    
+            });    
     }).catch(function (err) {
         if (err) {
-            res.json(JSON.stringify({
+            res.json({
                 success: false,
                 message: "Unhandled error while updating the user."
-            }));
+            });
             throw err;
         }
     });
@@ -133,38 +155,37 @@ router.get("/update/:idUser/:lastname/:firstname/:phone", function (req, res) {
 router.get('/changepassword/:idUser/:newPassword', function (req, res) {
     User.find({ where: { id: req.params.idUser } }).then(function (result) {
         if (result) {
-            User.update({ password: req.params.newPassword },
-                {
+            User.update({ password: req.params.newPassword },{
                     where: { id: req.params.idUser, deletedAt: null }
                 }).then(function (updateResult) {
                     if (updateResult) {
-                        res.json(JSON.stringify({
+                        res.json({
                             success: true,
                             message: "Password successfully updated."
-                        }));
+                        });
                     }
                 }).catch(function (updateErr) {
                     if (updateErr) {
-                        res.json(JSON.stringify({
+                        res.json({
                             success: false,
                             message: "Error while updating password."
-                        }));
+                        });
                         throw err;
                     }
                 });
         } else {
-            res.json(JSON.stringify({
+            res.json({
                 success: false,
                 message: "Error while updating password. No account with such ID."
-            }))
+            });
         }
 
     }).catch(function (err) {
         if (err) {
-            res.json(JSON.stringify({
+            res.json({
                 success: false,
                 message: "Error while updating password."
-            }));
+            });
             throw err;
         }
     });
@@ -181,16 +202,16 @@ router.get("/delete/:idUser", function (req, res) {
             deletedAt: null
         }
     }).then(function (result) {
-        res.json(JSON.stringify({
+        res.json({
             success: true,
             message: "User successfully deleted."
-        }));
+        });
     }).catch(function (err) {
         if (err) {
-            res.json(JSON.stringify({
+            res.json({
                 success: false,
                 message: "Unhandled error while deleting the user."
-            }));
+            });
             throw err;
         }
     });

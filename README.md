@@ -1,2 +1,2 @@
 # LibrarizeMe
-Refonte de l'application "Librarize.Me"
+API of the Librarize.Me application.

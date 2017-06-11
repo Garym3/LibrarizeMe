@@ -21,15 +21,15 @@ router.get('/login/:acc/:passwd', function(req, res){
             }, null, 3);
             res.send(print);
         } else {
-            res.send(JSON.stringify({
+            res.json({
                 message: "Error while authenticating. Maybe wrong account or password."
-            }))
+            });
         }
     }).catch(function(err){
         if(err){
-            res.send(JSON.stringify({
+            res.json({
                 message: "Error while authenticating."
-            }));
+            });
             throw err;
         } 
     });    
@@ -52,33 +52,33 @@ router.get('/resetpwd/:email', function(req, res){
                 }
             }).then(function(updateResult){
                 if(updateResult){
-                    res.send(JSON.stringify({
+                    res.json({
                         success: true,
                         message: "Password successfully updated."
-                    }));
+                    });
                 }
             }).catch(function(updateErr){
                 if(updateErr){
-                    res.send(JSON.stringify({
+                    res.json({
                         success: false,
                         message: "Error while updating password."
-                    }));
+                    });
                     throw err;
                 } 
             })
 
         } else {
-            res.send(JSON.stringify({
+            res.json({
                 success: false,
                 message: "Error while resetting password. No account with this email."
-            }))
+            });
         }
     }).catch(function(err){
         if(err){
-            res.send(JSON.stringify({
+            res.json({
                 success: false,
                 message: "Error while reseting password."
-            }));
+            });
             throw err;
         } 
     });
