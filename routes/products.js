@@ -21,7 +21,7 @@ router.get("/add/:libelle/:type/:description/:releaseDate/:price/:publisher/:aut
     let ean13Code = req.params.ean13Code;
     let likes = req.params.likes;
     let views = req.params.views;
-    Product.create({
+    Product.upsert({
         libelle: libelle,
         type: type,
         description: description,
@@ -33,10 +33,16 @@ router.get("/add/:libelle/:type/:description/:releaseDate/:price/:publisher/:aut
         likes: likes,
         views: views
     }).then(function (result) {
-        res.json(result);
+        res.json(JSON.stringify({
+            success: true,
+            message: "Product has been succesfully created or updated if it already exists."
+        }));
     }).catch(function (err) {
         if (err) {
-            res.json("Error while adding for a product.\n" + err);
+            res.json(JSON.stringify({
+                success: false,
+                message: "Unhandled error while creating the product."
+            }));
             throw err;
         }
     });
@@ -54,7 +60,10 @@ router.get("/", function (req, res, next) {
             res.json(result);
         }).catch(function (err) {
             if (err) {
-                res.json("Error while querying for all products.\n" + err);
+                res.json(JSON.stringify({
+                    success: false,
+                    message: "Unhandled error while querying for the products."
+                }));
                 throw err;
             }
         });
@@ -75,7 +84,10 @@ router.get("/get/details/:attribute/:value", function (req, res) {
                 res.json(result);
             }).catch(function (err) {
                 if (err) {
-                    res.json("Error while querying for a product's id.\n" + err);
+                    res.json(JSON.stringify({
+                        success: false,
+                        message: "Error while querying for a product's id."
+                    }));
                     throw err;
                 }
             });
@@ -88,7 +100,10 @@ router.get("/get/details/:attribute/:value", function (req, res) {
                 res.json(result);
             }).catch(function (err) {
                 if (err) {
-                    res.json("Error while querying for a product's libelle.\n" + err);
+                    res.json(JSON.stringify({
+                        success: false,
+                        message: "Error while querying for a product's libelle."
+                    }));
                     throw err;
                 }
             });
@@ -101,7 +116,10 @@ router.get("/get/details/:attribute/:value", function (req, res) {
                 res.json(result);
             }).catch(function (err) {
                 if (err) {
-                    res.json("Error while querying for a product's type.\n" + err);
+                    res.json(JSON.stringify({
+                        success: false,
+                        message: "Error while querying for a product's type."
+                    }));
                     throw err;
                 }
             });
@@ -114,7 +132,10 @@ router.get("/get/details/:attribute/:value", function (req, res) {
                 res.json(result);
             }).catch(function (err) {
                 if (err) {
-                    res.json("Error while querying a product's ean13 code.\n" + err);
+                    res.json(JSON.stringify({
+                        success: false,
+                        message: "Error while querying for a product's ean13Code."
+                    }));
                     throw err;
                 }
             });
@@ -122,10 +143,13 @@ router.get("/get/details/:attribute/:value", function (req, res) {
         default:
             Product.find()
                 .then(function (result) {
-                    res.json("Unknown error while querying for products.\n" + null);
+                    res.json("Unknown behavior while querying for products.");
                 }).catch(function (err) {
                     if (err) {
-                        res.json("Unknown error while querying for products.\n" + err);
+                        res.json(JSON.stringify({
+                            success: false,
+                            message: "Unknown error while querying for products."
+                        }));
                         throw err;
                     }
                 });
@@ -148,7 +172,10 @@ router.get("/get/filterby/:type/:libelle", function (req, res) {
         res.json(result);
     }).catch(function (err) {
         if (err) {
-            res.json("Error while querying for product with a search filter.\n" + err);
+            res.json(JSON.stringify({
+                success: false,
+                message: "Unknown error while querying for filtered products."
+            }));
             throw err;
         }
     });
@@ -168,7 +195,10 @@ router.get("/delete/:idProduct", function (req, res) {
         res.json(result); // return '1' = success or '0' = fail
     }).catch(function (err) {
         if (err) {
-            res.json("Error while deleting a product via its id.\n" + err);
+            res.json(JSON.stringify({
+                success: false,
+                message: "Error while deleting a product via its id."
+            }));
             throw err;
         }
     });

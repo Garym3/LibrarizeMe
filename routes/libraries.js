@@ -13,14 +13,20 @@ var Library = models.library;
 router.get("/add/:idUser/:idProduct", function (req, res, next) {
     let userId = req.params.idUser;
     let productId = req.params.idProduct;
-    Library.create({
+    Library.upsert({
         id_User: userId,
         id_Product: productId
     }).then(function (result) {
-        res.json(result);
+        res.json(JSON.stringify({
+            success: true,
+            message: "Product has been succesfully added to the library or updated if it already exists in the library."
+        }));
     }).catch(function (err) {
         if (err) {
-            res.json("Error while adding a product to the user's library.\n" + err);
+            res.json(JSON.stringify({
+                success: false,
+                message: "Error while adding a product to the user's library."
+            }));
             throw err;
         }
     });
@@ -39,14 +45,17 @@ router.get("/get/:idUser", function (req, res, next) {
         res.json(libProducts);
     }).catch(function (err) {
         if (err) {
-            res.json("Error while querying the user's products.\n" + err);
+            res.json(JSON.stringify({
+                success: false,
+                message: "Error while querying the user's products."
+            }));
             throw err;
         }
     });
 });
 
 /**
- * Delete a product of the user's library
+ * Delete a product from the user's library
  */
 router.get("/delete/:idUser/:idProduct", function (req, res, next) {
     Library.destroy({
@@ -60,7 +69,10 @@ router.get("/delete/:idUser/:idProduct", function (req, res, next) {
         res.json(result); // return '1' = success or '0' = fail
     }).catch(function (err) {
         if (err) {
-            res.json("Error while deleting a friendship.\n" + err);
+            res.json(JSON.stringify({
+                success: false,
+                message: "Error while deleting a product from the user's library."
+            }));
             throw err;
         }
     });

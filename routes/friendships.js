@@ -9,28 +9,75 @@ var Friendship = models.friendship;
 var Library = models.library;
 
 /**
- * Set a friendship between two users
- * 
- * First, it's a one-way friendship where A wants to befriend B.
- * Then, A technically has B for friend, but B has not.
- * Finally, B accepts and the friendship is settled.
- * If B refuses, then we can delete the one-way friendship of A with the delete route.
+ * Send a friend request from a user to another one
  */
-router.get("/add/:idUser/:idFriend", function (req, res, next) {
+router.get("/request/:idUser/:idFriend", function (req, res, next) {
     let userId = req.params.idUser;
     let friendId = req.params.idFriend;
-    Friendship.create({
+    Friendship.upsert({
         id_User: userId,
-        id_Friend: friendId
+        id_Friend: friendId,
+        isAccepted: 0,
+        deletedAt: null
     }).then(function (result) {
-        res.json(result);
+        res.json(JSON.stringify({
+            success: true,
+            message: "Friendship request has been successfully sent or updated if it already exists."
+        }));
     }).catch(function (err) {
         if (err) {
-            res.json("Error while setting a friendship.\n" + err);
+            res.json(JSON.stringify({
+                success: false,
+                message: "Error while setting the friend request."
+            }));
             throw err;
         }
     });
 });
+
+/**
+ * Accept a friend request 
+ */
+router.get("/accept/:idUser/:idFriend", function (req, res, next) {
+    let userId = req.params.idUser;
+    let friendId = req.params.idFriend;
+    Friendship.upsert({
+        id_User: userId,
+        id_Friend: friendId,
+        isAccepted: 1,
+        deletedAt: null
+    }).then(function (result) {
+        Friendship.upsert({
+            id_User: friendId,
+            id_Friend: userId,
+            isAccepted: 1,
+            deletedAt: null
+        }).then(function (result) {
+            res.json(JSON.stringify({
+                success: true,
+                message: "Friendship request has been successfully accepted or updated if it already exists."
+            }));
+        }).catch(function (err) {
+            if (err) {
+                res.json(JSON.stringify({
+                    success: false,
+                    message: "Error while accepting the friend request."
+                }));
+                throw err;
+            }
+        });
+        return null;
+    }).catch(function (err) {
+        if (err) {
+            res.json(JSON.stringify({
+                success: false,
+                message: "Error while setting the friend request."
+            }));
+            throw err;
+        }
+    });
+});
+
 
 /**
  * Get all users's friends
@@ -39,13 +86,16 @@ router.get("/get/:idUser", function (req, res, next) {
     User.findAll({
         //attributes: [], // Comment this to get user of 'idUser'
         where: { id: req.params.idUser, deletedAt: null },
-        include: [{ model: User, as: 'friendWith' }],
+        include: [{ model: User, as: 'friendWith', through: { where: { isAccepted: 1, deletedAt: null } } }],
         limit: 20
     }).then(friendsList => {
         res.json(friendsList);
     }).catch(function (err) {
         if (err) {
-            res.json("Error while querying a friendship.\n" + err);
+            res.json(JSON.stringify({
+                success: false,
+                message: "Error while querying a friendship."
+            }));
             throw err;
         }
     });
@@ -58,15 +108,15 @@ router.get("/get/:idUser/:idFriend", function (req, res, next) {
     User.find({
         //attributes: [], // Comment this to get user of 'idUser'
         where: { id: req.params.idUser, deletedAt: null },
-        include:
-        [{
-            model: User, as: 'friendWith', where: { id: req.params.idFriend, deletedAt: null }
-        }]
+        include: [{ model: User, as: 'friendWith', where: { id: req.params.idFriend, deletedAt: null } }]
     }).then(friendsList => {
         res.json(friendsList);
     }).catch(function (err) {
         if (err) {
-            res.json("Error while querying a friendship.\n" + err);
+            res.json(JSON.stringify({
+                success: false,
+                message: "Error while querying a friendship."
+            }));
             throw err;
         }
     });
@@ -83,28 +133,28 @@ router.get("/get/library/:idUser/:idFriend", function (req, res, next) {
         [{
             //attributes: [], // Comment this to get products and user of 'idFriend'
             where: { id: req.params.idFriend, deletedAt: null },
-            model: User, as: 'friendWith',
+            model: User, as: 'friendWith', through: { where: { isAccepted:1, deletedAt:null } },
             include:
             [{
                 //attributes: [], // Comment this to get products of 'idFriend'
                 model: Product, as: 'owns', where: { deletedAt: null }
             }]
         }]
-    }).then(friendProductsList => {
-        res.json(friendProductsList);
+    }).then(friendLibrary => {
+        res.json(friendLibrary);
     }).catch(function (err) {
         if (err) {
-            res.json("Error while querying a library's friend.\n" + err);
+            res.json(JSON.stringify({
+                success: false,
+                message: "Error while querying a library's friend."
+            }));
             throw err;
         }
     });
 });
 
 /**
- * Delete a users's friend
- * 
- * It needs to be done twice, each time for each friendship's side
- * only if the friendship is already mutual.
+ * Delete a users's friend (=) abort a friend request (=) refuse a friend request 
  */
 router.get("/delete/:idUser/:idFriend", function (req, res, next) {
     Friendship.destroy({
@@ -115,10 +165,16 @@ router.get("/delete/:idUser/:idFriend", function (req, res, next) {
             deletedAt: null
         }
     }).then(result => {
-        res.json(result); // return '1' = success or '0' = fail
+            res.json(JSON.stringify({
+                success: true,
+                message: "Friendship has been succesfully deleted."
+            }));
     }).catch(function (err) {
         if (err) {
-            res.json("Error while deleting a friendship.\n" + err);
+            res.json(JSON.stringify({
+                success: false,
+                message: "Error while deleting a friendship."
+            }));
             throw err;
         }
     });
