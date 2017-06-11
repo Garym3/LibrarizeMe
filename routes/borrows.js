@@ -26,13 +26,13 @@ router.get("/add/:idProduct/:idLender/:idBorrower", function (req, res, next) {
         begin = false;
     }
 
-    /*if(!funcsLibrary.verifyIfUserHasProduct(lenderId, productId)){
+    if(funcsLibrary.verifyIfUserHasProduct(lenderId, productId) === false){
         res.send(JSON.stringify({
             success: false,
             message: "User doesn't have the product on his library."
         }));
         begin = false;
-    }*/
+    }
 
     if(funcsFriends.verifyFriendShip(lenderId, borrowerId) == false){
         res.send(JSON.stringify({

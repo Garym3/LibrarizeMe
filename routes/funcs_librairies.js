@@ -8,9 +8,11 @@ exports.verifyIfUserHasProduct = function(iduser, idproduct){
         //attributes: [], // Comment this to get user of 'idUser'
         where: { id_User: iduser, id_Product: idproduct, deletedAt: null },
     }).then(libProducts => {
-        if(libProducts){
+        if(libProducts.id_Product != null){
+            console.log(libProducts);
             return true;
         } else {
+            console.log("no");
             return false;
         }
     }).catch(function (err) {
